@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#007991</color>
+    <color name="colorPrimaryDark">#002A33</color>
+    <color name="leftPress">#0094B2</color>
+    <color name="rightPress">#006377</color>
+    <color name="light">#FEFFFE</color>
+    <color name="white">#FFFFFF</color>
+
+</resources>
