@@ -46,7 +46,7 @@ public class Main extends Application {
 
         while(true) {
             server.updateStates();
-            mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
+//            mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
             sleep(10);
             System.out.println("");
         }

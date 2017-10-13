@@ -71,6 +71,14 @@ public class Client {
         System.out.println("Client side connection made");
     }
 
+    public void run() throws IOException, InterruptedException {
+        while(true){
+            sendUpdate();
+            sleep(10);
+        }
+
+    }
+
     public void sendLeft() throws IOException {
         output.writeBoolean(left);
         output.flush();
@@ -101,14 +109,6 @@ public class Client {
 
         Client client = new Client("127.0.0.1");
         client.init();
-        sleep(1000);
-        client.setX(100.0);
-        client.setY(100.0);
-        client.sendUpdate();
-
-//        while(true){
-//            client.sendUpdate();
-//            sleep(10);
-//        }
+        client.run();
     }
 }
