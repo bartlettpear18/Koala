@@ -1,53 +1,109 @@
 package com.bartlettpear18gmail.koalamouse;
 
 import android.util.Log;
+import android.os.AsyncTask;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Client {
+import static com.bartlettpear18gmail.koalamouse.Mouse.left;
+import static com.bartlettpear18gmail.koalamouse.Mouse.right;
+import static com.bartlettpear18gmail.koalamouse.Mouse.x;
+import static com.bartlettpear18gmail.koalamouse.Mouse.y;
 
-    private String tag = "Debug";
-    private Socket socket;
-    private final int PORT = 5000;
 
-    private DataOutputStream output;
-    private DataInputStream input;
 
-    private boolean left = false;
-    private boolean right = false;
-    private double x = 0.0;
-    private double y = 0.0;
+public class Client extends AsyncTask<Void, Void, Void> {
 
-    private String host;
-    private Mouse mouse;
+    //Debug tag
+    private static String tag = "Debug";
 
-    //Zero Parameter Constructor
+    //Server variables
+    private static Socket socket;
+    private static int port = 5000;
+    private static String ip; //Hotspot IP: 192.168.43.81, Barty IP: 10.0.0.162
+
+    //Stream variables
+    private DataInputStream input = null;
+    private DataOutputStream output = null;
+
+
+    //Regex Base String
+    private static final String IP_PATTERN =
+            "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+    //No parameter constructor
     public Client() {}
 
-
-    public Client(String host) {
-        this.host = host;
-        Log.d(tag, host);
+    public Client(String ip)  {
+        this.ip = ip;
     }
 
 
-    //Mutator methods
-    public void setLeft(boolean left) {
-        this.left = left;
+
+    //IP Address Methods
+    private static boolean checkAddress(String text) {
+        Pattern p = Pattern.compile(IP_PATTERN);
+        Matcher m = p.matcher(text);
+        return m.find();
     }
-    public void setRight(boolean right) {
-        this.right = right;
+    public static boolean setAddress(String newIp) {
+        boolean change = false;
+        if(checkAddress(newIp)) {
+            ip = newIp;
+            change = true;
+            Log.d(tag, "IP Confirmed and set");
+        } else {
+            Log.d(tag, "IP Submission rejected");
+            change = false;
+        }
+        return change;
     }
-    public void setX(double x) {
-        this.x = x;
-    }
-    public void setY(double y) {
-        this.y = y;
+    public String getAdddress() { return ip; }
+
+    //Socket methods
+    private void init() {
+        try{
+            socket = new Socket(ip, port);
+            output = new DataOutputStream(socket.getOutputStream());
+            input = new DataInputStream(socket.getInputStream());
+            Log.d(tag, "Streams created");
+        } catch (IOException e) {
+            Log.d(tag, "Start network activity here");
+        }
+
     }
 
+    private void close() throws IOException {
+        output.flush();
+        output.close();
+        input.close();
+        Log.d(tag, "Socket and Streams closed");
+    }
 
+    @Override
+    protected Void doInBackground(Void... voids) {
+        try {
+            Log.d(tag, "Checkpoint 1");
+            init();
+
+            while(true) {
+                sendUpdate();
+                wait(10);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
     public void sendLeft() throws IOException {
         output.writeBoolean(left);
         output.flush();
@@ -75,27 +131,5 @@ public class Client {
         sendY();
     }
 
-    /**
-     * Setup socket
-     * @throws IOException
-     */
-
-    public void init() {
-
-        try {
-            Log.d(tag, "Here should be fine");
-            socket = new Socket(host, PORT);
-            Log.d(tag, "Here?");
-            output = new DataOutputStream(socket.getOutputStream());
-            input = new DataInputStream(socket.getInputStream());
-            Log.d(tag, "Or here?");
-        } catch (IOException e) {
-            Log.d(tag, "Fail here");
-            e.printStackTrace();
-        }
-
-        Log.d(tag, "Connection made");
-
-    }
-
 }
+
