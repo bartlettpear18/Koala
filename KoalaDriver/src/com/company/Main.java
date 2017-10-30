@@ -35,25 +35,41 @@ public class Main extends Application {
     private Text address = new Text();
     private VBox vbox = new VBox();
     private Font font = new Font(50);
+    static Server server = null;
+    static Mouse mouse = null;
+
 
     public static void main(String[] args) throws IOException, InterruptedException, AWTException {
 
-//        launch(args);
-
-        Server server = new Server();
-        Mouse mouse = new Mouse();
-        server.init();
-
-        while(true) {
-            server.updateStates();
-//            mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
-            sleep(10);
-            System.out.println("");
-        }
-
-
+        Background obj = new Background();
+        Thread thread = new Thread(obj);
+        thread.setDaemon(true);
+        thread.start();
+        launch(args);
     }
 
+    //Initiates server connection in worker thread
+    static class Background implements Runnable{
+        @Override
+        public void run() {
+            try {
+                server = new Server();
+                mouse = new Mouse();
+                server.init();
+
+                while(true) {
+                    server.updateStates();
+//                    mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
+//                    sleep(10);
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void init() throws UnknownHostException {
@@ -106,3 +122,4 @@ public class Main extends Application {
         return ip;
     }
 }
+

@@ -10,7 +10,7 @@ import java.net.Socket;
 /**
  * Created by Joel.Bartlett18 on 10/12/2017.
  */
-public class Server{
+public class Server {
 
     private ServerSocket server;
     private Socket socket;
@@ -40,6 +40,7 @@ public class Server{
     public double getyDisplacement() {
         return yDisplacement;
     }
+    public Socket getSocket() { return socket; }
 
     /**
      * Setup server and socket

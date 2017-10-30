@@ -91,6 +91,7 @@ public class Client {
 
     public void sendX() throws IOException {
         output.writeDouble(x);
+        x++;
         output.flush();
     }
 

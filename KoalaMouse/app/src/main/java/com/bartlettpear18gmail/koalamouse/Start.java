@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+
+//Splash screen for professional app
+
 public class Start extends AppCompatActivity {
 
     @Override
