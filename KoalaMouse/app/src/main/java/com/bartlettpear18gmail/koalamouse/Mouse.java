@@ -39,6 +39,10 @@ public class Mouse extends AppCompatActivity {
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
 
+    Worker worker;
+
+    boolean running = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,41 +63,59 @@ public class Mouse extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Worker worker = new Worker(dataOutputStream, dataInputStream, mouseIP);
+        worker = new Worker(dataOutputStream, dataInputStream, mouseIP);
 
-        Thread thread2 = new Thread(new Runnable() {
+        Thread update = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    while(true) {
-                        dataOutputStream.writeBoolean(true);
+                while(running) {
+                    try {
+                        dataOutputStream.writeBoolean(mouseLeft);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         });
 
-        thread2.start();
+        update.start();
         worker.start();
     }
 
-
-    /**
-     * Handler for left button
-     * @param e
-     * @throws IOException
-     */
-    public void leftClick(MotionEvent e) throws IOException {
-        if(e.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
-            mouseLeft = true;
-            Log.d(tag, "Left pressed");
-
-        } else if (e.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
-            mouseLeft = false;
-            Log.d(tag, "Left released");
-        }
+    @Override
+    public void onPause() {
+        super.onPause();
+        running = false;
+        worker.interrupt();
+        Log.d(tag, "Stopping pipe");
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        running = true;
+        Log.d(tag, "Connecting pipe");
+    }
+
+    public void leftClick (View view) {
+        mouseLeft = !mouseLeft;
+    }
+
+//    /**
+//     * Handler for left button
+//     * @param e
+//     * @throws IOException
+//     */
+//    public void leftClick(MotionEvent e) throws IOException {
+//        if(e.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+//            mouseLeft = true;
+//            Log.d(tag, "Left pressed");
+//
+//        } else if (e.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
+//            mouseLeft = false;
+//            Log.d(tag, "Left released");
+//        }
+//    }
 
     /**
      * Runs network activity

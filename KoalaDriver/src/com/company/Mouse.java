@@ -22,11 +22,13 @@ public class Mouse {
         move((int) x,(int) y);
     }
 
-    private void handleLeft(boolean state) {
+    public void handleLeft(boolean state) {
         if(state) {
+            System.out.println("Clicking Left");
             bot.mousePress(leftMask);
             System.out.println("Left clicked");
         } else {
+            System.out.println("Unclicking left");
             bot.mouseRelease(leftMask);
             System.out.println("Left unclicked");
         }

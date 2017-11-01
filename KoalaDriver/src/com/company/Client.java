@@ -79,6 +79,10 @@ public class Client {
 
     }
 
+    public void changeLeft() {
+        left = !left;
+    }
+
     public void sendLeft() throws IOException {
         output.writeBoolean(left);
         output.flush();

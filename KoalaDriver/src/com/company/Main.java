@@ -46,6 +46,7 @@ public class Main extends Application {
         thread.setDaemon(true);
         thread.start();
         launch(args);
+
     }
 
     //Initiates server connection in worker thread
@@ -59,8 +60,11 @@ public class Main extends Application {
 
                 while(true) {
 //                    server.updateStates();
-                    System.out.println("Test");
-                    server.updateLeft();
+                    boolean leftState = server.updateLeft();
+                    if(leftState) { mouse.handleLeft(true); }
+                    else { mouse.handleLeft(false);}
+//                    boolean current = server.updateLeft();
+//                    mouse.handleLeft(current);
 //                    mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
 //                    sleep(10);
 

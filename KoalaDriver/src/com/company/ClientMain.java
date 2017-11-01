@@ -12,38 +12,36 @@ public class ClientMain {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        final PipedOutputStream output = new PipedOutputStream();
-        final PipedInputStream  input  = new PipedInputStream(output);
-
-        DataOutputStream o = new DataOutputStream(output);
-        DataInputStream i = new DataInputStream(input);
-
-//        Thread thread1 = new Thread(new Runnable() {
+//        final PipedOutputStream output = new PipedOutputStream();
+//        final PipedInputStream  input  = new PipedInputStream(output);
+//
+//        DataOutputStream o = new DataOutputStream(output);
+//        DataInputStream i = new DataInputStream(input);
+//
+//        Worker worker = new Worker(o, i);
+//
+//
+//        Thread thread2 = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
 //                try {
-//                    output.write("Hello world, pipe!".getBytes());
+//                    o.writeBoolean(true);
 //                } catch (IOException e) {
+//                    e.printStackTrace();
 //                }
 //            }
 //        });
+//
+//        worker.start();
+//        thread2.start();
+        Client client = new Client();
+        client.init();
+        client.sendLeft();
 
-        Worker worker = new Worker(o, i);
-
-
-        Thread thread2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    o.writeBoolean(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        worker.start();
-        thread2.start();    }
+        Thread.sleep(1000);
+        client.changeLeft();
+        client.sendLeft();
+    }
 
 
 }

@@ -33,9 +33,9 @@ public class Worker extends Thread {
         try {
             client.init();
 
-            while(true) {
-                client.sendLeft(workerIn.readBoolean());
-                Log.d(tag, "Sup dawg");
+            while(workerIn.available() != -1) {
+                boolean left = workerIn.readBoolean();
+                client.sendLeft(left);
             }
         } catch (IOException e) {
         }

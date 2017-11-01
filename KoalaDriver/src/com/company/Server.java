@@ -60,9 +60,10 @@ public class Server {
     }
 
 
-    public void updateLeft() throws IOException {
+    public boolean updateLeft() throws IOException {
         leftState = input.readBoolean();
         System.out.println("Left State: " + leftState);
+        return leftState;
     }
 
     private void updateRight() throws IOException {
