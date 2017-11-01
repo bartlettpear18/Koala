@@ -12,7 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
 import static com.bartlettpear18gmail.koalamouse.Network.getAddress;
 
 public class Mouse extends AppCompatActivity {
@@ -21,50 +28,56 @@ public class Mouse extends AppCompatActivity {
     private String mouseIP;
     private String tag = "debug";
 
-    private HandlerThread handlerThread = null;
-    private MouseHandler mouseHandler = null;
-
     public boolean mouseLeft = false;
     public boolean mouseRight = true;
     public double mouseX = 0.0;
     public double mouseY = 5.0;
+
+    PipedOutputStream output;
+    PipedInputStream input;
+
+    DataOutputStream dataOutputStream;
+    DataInputStream dataInputStream;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mouse);
 
-        new Worker().execute();
-
-        handlerThread = new HandlerThread("HandlerThread");
-        handlerThread.setDaemon(true);
-        handlerThread.start();
-
-        Looper loop = handlerThread.getLooper();
-        mouseHandler = new MouseHandler(loop);
-
         mouseIP = getAddress();
         Log.d(tag, "IP: " + mouseIP);
 
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        while(true) {
-            Message left = mouseHandler.obtainMessage();
-            left.obj = mouseLeft;
-            mouseHandler.sendMessage(left);
-            Log.d(tag, "Left sent to client: " + mouseLeft);
+        try {
+            output = new PipedOutputStream();
+            input  = new PipedInputStream(output);
+
+            dataOutputStream = new DataOutputStream(output);
+            dataInputStream = new DataInputStream(input);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        handlerThread.quit();
-        Log.d(tag,"Handler quit");
+        Worker worker = new Worker(dataOutputStream, dataInputStream, mouseIP);
 
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        dataOutputStream.writeBoolean(true);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread2.start();
+        worker.start();
     }
+
 
     /**
      * Handler for left button
@@ -91,10 +104,3 @@ public class Mouse extends AppCompatActivity {
         finish();
     }
 }
-
-class MouseHandler extends Handler {
-
-    public MouseHandler(Looper looper) { super(looper); }
-    public void handleMessage(Message msg) {}
-}
-

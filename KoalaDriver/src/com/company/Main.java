@@ -58,7 +58,9 @@ public class Main extends Application {
                 server.init();
 
                 while(true) {
-                    server.updateStates();
+//                    server.updateStates();
+                    System.out.println("Test");
+                    server.updateLeft();
 //                    mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
 //                    sleep(10);
 

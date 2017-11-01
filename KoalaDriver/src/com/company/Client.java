@@ -106,10 +106,5 @@ public class Client {
         sendX();
         sendY();
     }
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-        Client client = new Client("127.0.0.1");
-        client.init();
-        client.run();
-    }
 }
+
