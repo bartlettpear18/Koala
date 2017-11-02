@@ -59,19 +59,23 @@ public class Main extends Application {
                 server.init();
 
                 while(true) {
-//                    server.updateStates();
-                    boolean leftState = server.updateLeft();
-                    if(leftState) { mouse.handleLeft(true); }
-                    else { mouse.handleLeft(false);}
-//                    boolean current = server.updateLeft();
-//                    mouse.handleLeft(current);
-//                    mouse.performActions(server.getsLeftState(), server.getRightState(), server.getxDisplacement(), server.getyDisplacement());
-//                    sleep(10);
 
+                    //Store transmitted data
+                    boolean storeLeft = server.getBoolState();
+//                    boolean storeRight = server.getBoolState();
+//                    double storeX = server.getDoubleDisplacement();
+//                    double storeY = server.getDoubleDisplacement();
+
+                    //Handle left
+                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+
+                    //Handle right
+//                    if(storeRight) { mouse.pressRight(); } else { mouse.pressRight(); }
+//
+//                    //Handle displacememnts
+//                    mouse.move((int) storeX, (int) storeY);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (AWTException e) {
+            } catch (IOException | AWTException e) {
                 e.printStackTrace();
             }
         }

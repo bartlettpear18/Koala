@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class Network extends AppCompatActivity {
 
     private static String tag = "debug";
-    public static String ip = "192.168.43.81";
+    public static String ip = "192.168.43.81"; //"172.31.98.11"; //
 
     private EditText text;
     private EditText text2;

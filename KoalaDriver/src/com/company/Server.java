@@ -19,28 +19,8 @@ public class Server {
     private DataInputStream input;
     private DataOutputStream output;
 
-    private boolean leftState;
-    private boolean rightState;
-    private double xDisplacement;
-    private double yDisplacement;
-
     //Zero parameter constructor
     public Server() {}
-
-    //Accessor methods
-    public boolean getsLeftState() {
-        return leftState;
-    }
-    public boolean getRightState() {
-        return rightState;
-    }
-    public double getxDisplacement() {
-        return xDisplacement;
-    }
-    public double getyDisplacement() {
-        return yDisplacement;
-    }
-    public Socket getSocket() { return socket; }
 
     /**
      * Setup server and socket
@@ -59,34 +39,8 @@ public class Server {
         System.out.println("Connection bound");
     }
 
+    public boolean getBoolState() throws IOException { return input.readBoolean(); }
 
-    public boolean updateLeft() throws IOException {
-        leftState = input.readBoolean();
-        System.out.println("Left State: " + leftState);
-        return leftState;
-    }
-
-    private void updateRight() throws IOException {
-        rightState = input.readBoolean();
-        System.out.println("Right State: " + rightState);
-    }
-
-    private void updateX() throws IOException {
-        xDisplacement = input.readDouble();
-        System.out.println("X Displacement: " + xDisplacement);
-    }
-
-    private void updateY() throws IOException {
-        yDisplacement = input.readDouble();
-        System.out.println("Y Displacement: " + yDisplacement);
-    }
-
-    public void updateStates() throws IOException {
-        updateLeft();
-        updateRight();
-        updateX();
-        updateY();
-    }
-
+    public double getDoubleDisplacement() throws IOException { return input.readDouble(); }
 
 }

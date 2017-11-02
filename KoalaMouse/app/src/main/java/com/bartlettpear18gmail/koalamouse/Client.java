@@ -25,16 +25,13 @@ public class Client {
     public Client() {}
 
     //Initialize hostIP constructor
-    public Client(String ip)  {
-        this.hostIP = ip;
-    }
+    public Client(String ip)  { hostIP = ip; }
 
     //Socket methods
     public boolean init() throws IOException {
         socket = new Socket(hostIP, port);
         output = new DataOutputStream(socket.getOutputStream());
         input = new DataInputStream(socket.getInputStream());
-        Log.d(tag, "Streams created");
         return socket.isConnected();
     }
     public void close() throws IOException {
@@ -45,22 +42,14 @@ public class Client {
     }
 
     //Unit methods to send to server
-    public void sendLeft(boolean left) throws IOException {
-        output.writeBoolean(left);
-        output.flush();
-    }
-    public void sendRight(boolean right) throws IOException {
-        output.writeBoolean(right);
-        output.flush();
-    }
-    public void sendX(double x) throws IOException {
-        output.writeDouble(x);
-        output.flush();
-    }
-    public void sendY(double y) throws IOException {
-        output.writeDouble(y);
+    public void writeBoolean(boolean input) throws IOException {
+        output.writeBoolean(input);
         output.flush();
     }
 
+    public void writeDouble(double input) throws IOException {
+        output.writeDouble(input);
+        output.flush();
+    }
 }
 

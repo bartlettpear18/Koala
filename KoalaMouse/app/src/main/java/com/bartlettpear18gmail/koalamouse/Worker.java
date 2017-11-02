@@ -19,6 +19,8 @@ public class Worker extends Thread {
     private DataInputStream workerIn;
     private DataOutputStream workerOut;
 
+    private boolean running = true;
+
     private Client client;
 
     public Worker(DataOutputStream out, DataInputStream in, String ip) {
@@ -28,14 +30,24 @@ public class Worker extends Thread {
         client = new Client(ip);
     }
 
+    public void stopThread() throws IOException {
+        running = false;
+        client.close();
+    }
+
     @Override
     public void run() {
         try {
             client.init();
 
-            while(workerIn.available() != -1) {
+            while(workerIn.available() != -1 && running) {
+
+                //Store piped data
                 boolean left = workerIn.readBoolean();
-                client.sendLeft(left);
+
+                if(left) { Log.d(tag, "Left is true");}
+                //Send data over network
+                client.writeBoolean(left);
             }
         } catch (IOException e) {
         }

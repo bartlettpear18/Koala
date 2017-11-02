@@ -13,40 +13,22 @@ public class Mouse {
     private int leftMask = InputEvent.BUTTON1_MASK;
     private int rightMask = InputEvent.BUTTON3_MASK;
 
-
     public Mouse() throws AWTException { bot = new Robot(); }
 
-    public void performActions(boolean left, boolean right, double x, double y) throws AWTException {
-        handleLeft(left);
-        handleRight(right);
-        move((int) x,(int) y);
-    }
-
-    public void handleLeft(boolean state) {
-        if(state) {
-            System.out.println("Clicking Left");
-            bot.mousePress(leftMask);
-            System.out.println("Left clicked");
-        } else {
-            System.out.println("Unclicking left");
-            bot.mouseRelease(leftMask);
-            System.out.println("Left unclicked");
-        }
-    }
-
-    private void handleRight(boolean state) {
-        if(state) {
-            bot.mousePress(rightMask);
-        } else {
-            bot.mouseRelease(rightMask);
-        }
-    }
-
-    private void move(int x, int y) throws AWTException {
+    public void move(int x, int y) throws AWTException {
         Point currentPos = MouseInfo.getPointerInfo().getLocation();
         int currentX = (int) currentPos.getX();
         int currentY = (int) currentPos.getY();
         bot.mouseMove(currentX + x,currentY - y);
     }
 
+    public void pressLeft() {
+        bot.mousePress(leftMask);
+    }
+
+    public void releaseLeft() { bot.mouseRelease(leftMask);}
+
+    public void pressRight() { bot.mousePress(rightMask);}
+
+    public void releasRight() { bot.mouseRelease(rightMask);}
 }

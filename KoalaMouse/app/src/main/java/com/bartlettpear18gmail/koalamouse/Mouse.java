@@ -1,19 +1,12 @@
 package com.bartlettpear18gmail.koalamouse;
 
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
-import android.support.annotation.WorkerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,7 +43,21 @@ public class Mouse extends AppCompatActivity {
         setContentView(R.layout.activity_mouse);
 
         mouseIP = getAddress();
-        Log.d(tag, "IP: " + mouseIP);
+
+        final Button leftButton = (Button) findViewById(R.id.left);
+        leftButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mouseLeft = true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    mouseLeft = false;
+                } else {
+                    mouseLeft = false;
+                }
+                return false;
+            }
+        });
 
         try {
             output = new PipedOutputStream();
@@ -71,7 +78,8 @@ public class Mouse extends AppCompatActivity {
                 while(running) {
                     try {
                         dataOutputStream.writeBoolean(mouseLeft);
-                    } catch (IOException e) {
+                        Thread.sleep(10);
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -79,14 +87,17 @@ public class Mouse extends AppCompatActivity {
         });
 
         update.start();
-        worker.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         running = false;
-        worker.interrupt();
+        try {
+            worker.stopThread();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Log.d(tag, "Stopping pipe");
     }
 
@@ -94,35 +105,12 @@ public class Mouse extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         running = true;
+        worker.start();
         Log.d(tag, "Connecting pipe");
     }
 
-    public void leftClick (View view) {
-        mouseLeft = !mouseLeft;
-    }
-
-//    /**
-//     * Handler for left button
-//     * @param e
-//     * @throws IOException
-//     */
-//    public void leftClick(MotionEvent e) throws IOException {
-//        if(e.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
-//            mouseLeft = true;
-//            Log.d(tag, "Left pressed");
-//
-//        } else if (e.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
-//            mouseLeft = false;
-//            Log.d(tag, "Left released");
-//        }
+//    public void leftClick(View view) {
+//        mouseLeft = !mouseLeft;
 //    }
 
-    /**
-     * Runs network activity
-     */
-    public void startNetwork() {
-        Intent intent = new Intent(this, Network.class);
-        startActivity(intent);
-        finish();
-    }
 }
