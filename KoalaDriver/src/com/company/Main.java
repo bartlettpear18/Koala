@@ -62,20 +62,22 @@ public class Main extends Application {
 
                     //Store transmitted data
                     boolean storeLeft = server.getBoolState();
-//                    boolean storeRight = server.getBoolState();
-//                    double storeX = server.getDoubleDisplacement();
-//                    double storeY = server.getDoubleDisplacement();
+                    boolean storeRight = server.getBoolState();
+                    double storeX = server.getDoubleDisplacement() * 100;
+                    double storeY = server.getDoubleDisplacement() * 100;
 
-                    //Handle left
-                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
-
-                    //Handle right
+//                    //Handle left
+//                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+//
+//                    //Handle right
 //                    if(storeRight) { mouse.pressRight(); } else { mouse.pressRight(); }
 //
-//                    //Handle displacememnts
+                    //Handle displacememnts
+                    System.out.println("x: " + storeX + " y: " + storeY);
+                    Thread.sleep(10);
 //                    mouse.move((int) storeX, (int) storeY);
                 }
-            } catch (IOException | AWTException e) {
+            } catch (IOException | AWTException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

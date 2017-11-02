@@ -1,5 +1,9 @@
 package com.bartlettpear18gmail.koalamouse;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +19,7 @@ import java.io.PipedOutputStream;
 
 import static com.bartlettpear18gmail.koalamouse.Network.getAddress;
 
-public class Mouse extends AppCompatActivity {
+public class Mouse extends AppCompatActivity implements SensorEventListener {
 
     private Client client;
     private String mouseIP;
@@ -35,6 +39,12 @@ public class Mouse extends AppCompatActivity {
     Worker worker;
 
     boolean running = true;
+
+    //Sensor setup
+    private SensorManager sensorManager;
+    private final double Z_LIMIT = 0.1;
+    private float xAccel;
+    private float yAccel;
 
 
     @Override
@@ -59,6 +69,21 @@ public class Mouse extends AppCompatActivity {
             }
         });
 
+        final Button rightButton = (Button) findViewById(R.id.right);
+        rightButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mouseRight = true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    mouseRight = false;
+                } else {
+                    mouseRight = false;
+                }
+                return false;
+            }
+        });
+
         try {
             output = new PipedOutputStream();
             input  = new PipedInputStream(output);
@@ -78,8 +103,11 @@ public class Mouse extends AppCompatActivity {
                 while(running) {
                     try {
                         dataOutputStream.writeBoolean(mouseLeft);
-                        Thread.sleep(10);
-                    } catch (IOException | InterruptedException e) {
+                        dataOutputStream.writeBoolean(mouseRight);
+                        dataOutputStream.writeDouble((double) xAccel);
+                        dataOutputStream.writeDouble((double) yAccel);
+//                        Thread.sleep(10);
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -108,6 +136,22 @@ public class Mouse extends AppCompatActivity {
         worker.start();
         Log.d(tag, "Connecting pipe");
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if(event.values[2] < Z_LIMIT) {
+                xAccel =  event.values[0];
+                yAccel =  event.values[1];
+            } else {
+                xAccel = 0;
+                yAccel = 0;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {}
 
 //    public void leftClick(View view) {
 //        mouseLeft = !mouseLeft;

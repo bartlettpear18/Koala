@@ -44,10 +44,15 @@ public class Worker extends Thread {
 
                 //Store piped data
                 boolean left = workerIn.readBoolean();
+                boolean right = workerIn.readBoolean();
+                double x = workerIn.readDouble();
+                double y = workerIn.readDouble();
 
-                if(left) { Log.d(tag, "Left is true");}
                 //Send data over network
                 client.writeBoolean(left);
+                client.writeBoolean(right);
+                client.writeDouble(x);
+                client.writeDouble(y);
             }
         } catch (IOException e) {
         }
