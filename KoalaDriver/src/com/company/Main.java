@@ -62,18 +62,19 @@ public class Main extends Application {
 
                     //Store transmitted data
                     boolean storeLeft = server.getBoolState();
+                    System.out.println("" + storeLeft);
                     boolean storeRight = server.getBoolState();
                     double storeX = server.getDoubleDisplacement() * 100;
                     double storeY = server.getDoubleDisplacement() * 100;
 
-//                    //Handle left
-//                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+                    //Handle left
+                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
 //
 //                    //Handle right
 //                    if(storeRight) { mouse.pressRight(); } else { mouse.pressRight(); }
 //
                     //Handle displacememnts
-                    System.out.println("x: " + storeX + " y: " + storeY);
+//                    System.out.println("x: " + storeX + " y: " + storeY);
                     Thread.sleep(10);
 //                    mouse.move((int) storeX, (int) storeY);
                 }

@@ -19,7 +19,7 @@ import java.io.PipedOutputStream;
 
 import static com.bartlettpear18gmail.koalamouse.Network.getAddress;
 
-public class Mouse extends AppCompatActivity implements SensorEventListener {
+public class Mouse extends AppCompatActivity {
 
     private Client client;
     private String mouseIP;
@@ -54,6 +54,7 @@ public class Mouse extends AppCompatActivity implements SensorEventListener {
 
         mouseIP = getAddress();
 
+        //Left button handler
         final Button leftButton = (Button) findViewById(R.id.left);
         leftButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -69,20 +70,21 @@ public class Mouse extends AppCompatActivity implements SensorEventListener {
             }
         });
 
-        final Button rightButton = (Button) findViewById(R.id.right);
-        rightButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mouseRight = true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP){
-                    mouseRight = false;
-                } else {
-                    mouseRight = false;
-                }
-                return false;
-            }
-        });
+//        //Right button handler
+//        final Button rightButton = (Button) findViewById(R.id.right);
+//        rightButton.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    mouseRight = true;
+//                } else if (event.getAction() == MotionEvent.ACTION_UP){
+//                    mouseRight = false;
+//                } else {
+//                    mouseRight = false;
+//                }
+//                return false;
+//            }
+//        });
 
         try {
             output = new PipedOutputStream();
@@ -103,9 +105,9 @@ public class Mouse extends AppCompatActivity implements SensorEventListener {
                 while(running) {
                     try {
                         dataOutputStream.writeBoolean(mouseLeft);
-                        dataOutputStream.writeBoolean(mouseRight);
-                        dataOutputStream.writeDouble((double) xAccel);
-                        dataOutputStream.writeDouble((double) yAccel);
+//                        dataOutputStream.writeBoolean(mouseRight);
+//                        dataOutputStream.writeDouble((double) xAccel);
+//                        dataOutputStream.writeDouble((double) yAccel);
 //                        Thread.sleep(10);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -137,24 +139,21 @@ public class Mouse extends AppCompatActivity implements SensorEventListener {
         Log.d(tag, "Connecting pipe");
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if(event.values[2] < Z_LIMIT) {
-                xAccel =  event.values[0];
-                yAccel =  event.values[1];
-            } else {
-                xAccel = 0;
-                yAccel = 0;
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {}
-
-//    public void leftClick(View view) {
-//        mouseLeft = !mouseLeft;
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+//            if(event.values[2] < Z_LIMIT) {
+//                xAccel =  event.values[0];
+//                yAccel =  event.values[1];
+//            } else {
+//                xAccel = 0;
+//                yAccel = 0;
+//            }
+//            Log.d(tag, "X Acc: " + xAccel + " Y acc: " + yAccel);
+//        }
 //    }
+//
+//    @Override
+//    public void onAccuracyChanged(Sensor sensor, int i) {}
 
 }
