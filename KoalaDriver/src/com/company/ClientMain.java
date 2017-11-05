@@ -12,35 +12,28 @@ public class ClientMain {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-//        final PipedOutputStream output = new PipedOutputStream();
-//        final PipedInputStream  input  = new PipedInputStream(output);
-//
-//        DataOutputStream o = new DataOutputStream(output);
-//        DataInputStream i = new DataInputStream(input);
-//
-//        Worker worker = new Worker(o, i);
-//
-//
-//        Thread thread2 = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    o.writeBoolean(true);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        worker.start();
-//        thread2.start();
-        Client client = new Client();
-        client.init();
-        client.sendLeft();
+        final PipedOutputStream output = new PipedOutputStream();
+        final PipedInputStream  input  = new PipedInputStream(output);
 
-        Thread.sleep(1000);
-        client.changeLeft();
-        client.sendLeft();
+        DataOutputStream o = new DataOutputStream(output);
+        DataInputStream i = new DataInputStream(input);
+
+        Worker worker = new Worker(o, i);
+
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    o.writeBoolean(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        worker.start();
+        thread2.start();
     }
 
 
@@ -58,14 +51,9 @@ class Worker extends Thread {
 
     public void run() {
         try {
+
             System.out.println("" + workerIn.readBoolean());
         } catch (IOException e) {
         }
-
-
-//        Client client = new Client("127.0.0.1");
-//        client.init();
-//        client.run();
-
     }
 }

@@ -75,7 +75,7 @@ public class Main extends Application {
 //                    //Handle displacememnts
 //                    mouse.move((int) storeX, (int) storeY);
                 }
-            } catch (IOException | AWTException e) {
+            } catch (IOException |  AWTException e) {
                 e.printStackTrace();
             }
         }

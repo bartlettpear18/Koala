@@ -22,7 +22,7 @@ public class Mouse extends AppCompatActivity {
     private String tag = "debug";
 
     public boolean mouseLeft = false;
-    public boolean mouseRight = true;
+    public boolean mouseRight = false;
     public double mouseX = 0.0;
     public double mouseY = 5.0;
 
@@ -59,6 +59,19 @@ public class Mouse extends AppCompatActivity {
             }
         });
 
+        final Button rightButton = (Button) findViewById(R.id.right);
+        rightButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mouseRight = true;
+                } else {
+                    mouseRight = false;
+                }
+                return false;
+            }
+        });
+
         try {
             output = new PipedOutputStream();
             input  = new PipedInputStream(output);
@@ -78,6 +91,9 @@ public class Mouse extends AppCompatActivity {
                 while(running) {
                     try {
                         dataOutputStream.writeBoolean(mouseLeft);
+                        dataOutputStream.writeBoolean(mouseRight);
+                        dataOutputStream.writeDouble(mouseX);
+                        dataOutputStream.writeDouble(mouseY);
                         Thread.sleep(10);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
@@ -108,9 +124,5 @@ public class Mouse extends AppCompatActivity {
         worker.start();
         Log.d(tag, "Connecting pipe");
     }
-
-//    public void leftClick(View view) {
-//        mouseLeft = !mouseLeft;
-//    }
 
 }
