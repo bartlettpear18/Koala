@@ -1,5 +1,9 @@
 package com.bartlettpear18gmail.koalamouse;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,26 +19,34 @@ import java.io.PipedOutputStream;
 
 import static com.bartlettpear18gmail.koalamouse.Network.getAddress;
 
-public class Mouse extends AppCompatActivity {
+public class Mouse extends AppCompatActivity implements SensorEventListener{
 
+    //TCP Setup
     private Client client;
     private String mouseIP;
     private String tag = "debug";
 
+    //TCP Data
     public boolean mouseLeft = false;
     public boolean mouseRight = false;
     public double mouseX = 0.0;
     public double mouseY = 5.0;
 
+    //Sensor setup
+    private SensorManager sensorManager;
+    private final double Z_LIMIT = 0.1;
+    private float xAccel;
+    private float yAccel;
+
+    //Inter-thread communications
     PipedOutputStream output;
     PipedInputStream input;
-
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
-
     Worker worker;
-
     boolean running = true;
+
+    private final int SCALAR = 10;
 
 
     @Override
@@ -42,7 +54,11 @@ public class Mouse extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mouse);
 
-        mouseIP = getAddress();
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
+        Log.d(tag, "Sensor Manager instantiated");
+
+        mouseIP = "192.168.43.81";
 
         final Button leftButton = (Button) findViewById(R.id.left);
         leftButton.setOnTouchListener(new View.OnTouchListener() {
@@ -125,4 +141,23 @@ public class Mouse extends AppCompatActivity {
         Log.d(tag, "Connecting pipe");
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if(event.values[2] < 1) {
+                xAccel =  event.values[0];
+                yAccel =  event.values[1];
+
+                mouseX = (double) (xAccel * SCALAR);
+                mouseY = (double) (yAccel * SCALAR);
+            } else {
+                xAccel = 0;
+                yAccel = 0;
+            }
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {}
 }

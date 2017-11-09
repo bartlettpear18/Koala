@@ -47,9 +47,12 @@ public class Worker extends Thread {
                 boolean right = workerIn.readBoolean();
                 double x = workerIn.readDouble();
                 double y = workerIn.readDouble();
-                Log.d(tag, "right: " + right);
+//                Log.d(tag, "Left: " + left + "right: " + right + "x: " + x + "y: " + y);
                 //Send data over network
                 client.writeBoolean(left);
+                client.writeBoolean(right);
+                client.writeDouble(x);
+                client.writeDouble(y);
             }
         } catch (IOException e) {
         }

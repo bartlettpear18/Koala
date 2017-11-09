@@ -61,19 +61,38 @@ public class Main extends Application {
                 while(true) {
 
                     //Store transmitted data
-                    boolean storeLeft = server.getBoolState();
+//                    boolean storeLeft = server.getBoolState();
 //                    boolean storeRight = server.getBoolState();
-//                    double storeX = server.getDoubleDisplacement();
-//                    double storeY = server.getDoubleDisplacement();
+                    if(server.getBoolState()) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+//                    if(server.getBoolState()) { mouse.pressRight(); } else { mouse.releasRight(); }
 
-                    //Handle left
-                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+                    double storeX = server.getDoubleDisplacement();
+                    double storeY = server.getDoubleDisplacement();
 
-                    //Handle right
-//                    if(storeRight) { mouse.pressRight(); } else { mouse.pressRight(); }
+                    mouse.move((int) storeX, (int) storeY);
+
+
+//                    Thread clicks = new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if(storeLeft) {
+//                                mouse.pressLeft();
+////                                System.out.println("Click the left man");
+//                            } else {
+//                                mouse.releaseLeft();
+//                            }
+////                            if(storeRight) {
+//////                                mouse.pressRight();
+////                                System.out.println("Click the right man");
+////                            } else {
+//////                                mouse.pressRight();
+////                            }
+//                        }
 //
-//                    //Handle displacememnts
-//                    mouse.move((int) storeX, (int) storeY);
+//                    });
+//                    clicks.setDaemon(true);
+//                    clicks.start();
+
                 }
             } catch (IOException |  AWTException e) {
                 e.printStackTrace();
