@@ -72,10 +72,24 @@ public class Client {
     }
 
     public void run() throws IOException, InterruptedException {
-        while(true){
-            sendUpdate();
-            sleep(10);
-        }
+
+        Integer x = 22;
+        Integer y = 33;
+
+        Byte left = new Byte("1");
+        Byte right = new Byte("0");
+        Byte xb = x.byteValue();
+        Byte yb = y.byteValue();
+
+        byte[] arr = {left, right, xb, yb};
+
+
+        output.write(arr);
+
+//        while(true){
+//            sendUpdate();
+//            sleep(10);
+//        }
 
     }
 

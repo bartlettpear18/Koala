@@ -13,6 +13,9 @@ public class Mouse {
     private int leftMask = InputEvent.BUTTON1_MASK;
     private int rightMask = InputEvent.BUTTON3_MASK;
 
+    private final int X_SCALAR = 10;
+    private final int Y_SCALAR = 10;
+
     public Mouse() throws AWTException { bot = new Robot(); }
 
     public void move(int x, int y) throws AWTException {

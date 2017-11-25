@@ -34,6 +34,7 @@ public class Client {
         input = new DataInputStream(socket.getInputStream());
         return socket.isConnected();
     }
+
     public void close() throws IOException {
         output.flush();
         output.close();
@@ -41,14 +42,8 @@ public class Client {
         Log.d(tag, "Socket and Streams closed");
     }
 
-    //Unit methods to send to server
-    public void writeBoolean(boolean input) throws IOException {
-        output.writeBoolean(input);
-        output.flush();
-    }
-
-    public void writeDouble(double input) throws IOException {
-        output.writeDouble(input);
+    public void sendPacket(byte[] packet) throws IOException {
+        output.write(packet);
         output.flush();
     }
 }

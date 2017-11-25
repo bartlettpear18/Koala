@@ -46,7 +46,6 @@ public class Main extends Application {
         thread.setDaemon(true);
         thread.start();
         launch(args);
-
     }
 
     //Initiates server connection in worker thread
@@ -58,40 +57,18 @@ public class Main extends Application {
                 mouse = new Mouse();
                 server.init();
 
+
+
                 while(true) {
 
-                    //Store transmitted data
-//                    boolean storeLeft = server.getBoolState();
-//                    boolean storeRight = server.getBoolState();
-                    if(server.getBoolState()) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
-//                    if(server.getBoolState()) { mouse.pressRight(); } else { mouse.releasRight(); }
+                    byte[] packet = server.readPacket();
+                    int x = packet[2];
+                    int y = packet[3];
 
-                    double storeX = server.getDoubleDisplacement();
-                    double storeY = server.getDoubleDisplacement();
+//                    if(packet[0] == 1) mouse.pressLeft(); else mouse.releaseLeft();
+//                    if(packet[1] == 1) mouse.pressRight(); else mouse.releasRight();
 
-                    mouse.move((int) storeX, (int) storeY);
-
-
-//                    Thread clicks = new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if(storeLeft) {
-//                                mouse.pressLeft();
-////                                System.out.println("Click the left man");
-//                            } else {
-//                                mouse.releaseLeft();
-//                            }
-////                            if(storeRight) {
-//////                                mouse.pressRight();
-////                                System.out.println("Click the right man");
-////                            } else {
-//////                                mouse.pressRight();
-////                            }
-//                        }
-//
-//                    });
-//                    clicks.setDaemon(true);
-//                    clicks.start();
+                    mouse.move(x,y);
 
                 }
             } catch (IOException |  AWTException e) {

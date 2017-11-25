@@ -39,8 +39,10 @@ public class Server {
         System.out.println("Connection bound");
     }
 
-    public boolean getBoolState() throws IOException { return input.readBoolean(); }
-
-    public double getDoubleDisplacement() throws IOException { return input.readDouble(); }
+    public byte[] readPacket() throws  IOException {
+        byte[] b = new byte[4];
+        input.read(b);
+        return b;
+    }
 
 }

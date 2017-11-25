@@ -35,9 +35,11 @@ public class ClientMain {
 //        worker.start();
 //        thread2.start();
 
-        Client client = new Client("10.230.219.228");
+        Client client = new Client("127.0.0.1");
         client.init();
         client.run();
+
+
     }
 
 

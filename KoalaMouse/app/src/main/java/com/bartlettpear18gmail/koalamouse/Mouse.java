@@ -27,10 +27,10 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
     private String tag = "debug";
 
     //TCP Data
-    public boolean mouseLeft = false;
-    public boolean mouseRight = false;
-    public double mouseX = 0.0;
-    public double mouseY = 5.0;
+    public Integer mouseLeft = 0;
+    public Integer mouseRight = 0;
+    public Integer mouseX = 0;
+    public Integer mouseY = 0;
 
     //Sensor setup
     private SensorManager sensorManager;
@@ -41,12 +41,24 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
     //Inter-thread communications
     PipedOutputStream output;
     PipedInputStream input;
+
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
+
     Worker worker;
     boolean running = true;
 
+    //Motion analysis
     private final int SCALAR = 10;
+    private final int DELTA_TIME = 10; //milliseconds
+
+    private int prevPosX = 0;
+    private int prevPosY = 0;
+
+    private int currentPosX;
+    private int currentPosY;
+
+
 
 
     @Override
@@ -60,33 +72,6 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
 
         mouseIP = "192.168.43.81";
 
-        final Button leftButton = (Button) findViewById(R.id.left);
-        leftButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mouseLeft = true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP){
-                    mouseLeft = false;
-                } else {
-                    mouseLeft = false;
-                }
-                return false;
-            }
-        });
-
-        final Button rightButton = (Button) findViewById(R.id.right);
-        rightButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mouseRight = true;
-                } else {
-                    mouseRight = false;
-                }
-                return false;
-            }
-        });
 
         try {
             output = new PipedOutputStream();
@@ -99,18 +84,50 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
             e.printStackTrace();
         }
 
+        //Worker Thread instantiation
         worker = new Worker(dataOutputStream, dataInputStream, mouseIP);
+
+        //Left Button Handler
+        final Button leftButton = (Button) findViewById(R.id.left);
+        leftButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                mouseLeft = (event.getAction() == MotionEvent.ACTION_DOWN) ? 1 : 0;
+                return false;
+            }
+        });
+
+        //Right Button Handler
+        final Button rightButton = (Button) findViewById(R.id.right);
+        rightButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                mouseRight = (event.getAction() == MotionEvent.ACTION_DOWN) ? 1 : 0;
+                return false;
+            }
+        });
+
 
         Thread update = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(running) {
                     try {
-                        dataOutputStream.writeBoolean(mouseLeft);
-                        dataOutputStream.writeBoolean(mouseRight);
-                        dataOutputStream.writeDouble(mouseX);
-                        dataOutputStream.writeDouble(mouseY);
-                        Thread.sleep(10);
+
+                        currentPosX = (int) (xAccel * DELTA_TIME * DELTA_TIME)/2;
+                        currentPosY = (int) (yAccel * DELTA_TIME * DELTA_TIME)/2;
+
+                        mouseX = currentPosX - prevPosX;
+                        mouseY = currentPosY - prevPosY;
+
+                        Log.d(tag, mouseX + " " + mouseY);
+                        byte[] packet = {mouseLeft.byteValue(), mouseRight.byteValue(), mouseX.byteValue(), mouseY.byteValue()};
+                        dataOutputStream.write(packet);
+
+                        prevPosX = currentPosX;
+                        prevPosY = currentPosY;
+
+                        Thread.sleep(DELTA_TIME);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -144,12 +161,10 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if(event.values[2] < 1) {
+            if(event.values[2] < Z_LIMIT) {
                 xAccel =  event.values[0];
                 yAccel =  event.values[1];
 
-                mouseX = (double) (xAccel * SCALAR);
-                mouseY = (double) (yAccel * SCALAR);
             } else {
                 xAccel = 0;
                 yAccel = 0;
@@ -160,4 +175,5 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
+
 }
