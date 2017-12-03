@@ -63,6 +63,7 @@ public class Main extends Application {
 
                 while(true) {
 
+<<<<<<< HEAD
                     byte[] packet = server.readPacket();
                     int x = packet[2];
                     int y = packet[3];
@@ -73,6 +74,27 @@ public class Main extends Application {
 
                 }
             } catch (IOException |  AWTException e) {
+=======
+                    //Store transmitted data
+                    boolean storeLeft = server.getBoolState();
+                    System.out.println("" + storeLeft);
+                    boolean storeRight = server.getBoolState();
+                    double storeX = server.getDoubleDisplacement() * 100;
+                    double storeY = server.getDoubleDisplacement() * 100;
+
+                    //Handle left
+                    if(storeLeft) { mouse.pressLeft(); } else { mouse.releaseLeft(); }
+//
+//                    //Handle right
+//                    if(storeRight) { mouse.pressRight(); } else { mouse.pressRight(); }
+//
+                    //Handle displacememnts
+//                    System.out.println("x: " + storeX + " y: " + storeY);
+                    Thread.sleep(10);
+//                    mouse.move((int) storeX, (int) storeY);
+                }
+            } catch (IOException | AWTException | InterruptedException e) {
+>>>>>>> refs/remotes/origin/master
                 e.printStackTrace();
             }
         }

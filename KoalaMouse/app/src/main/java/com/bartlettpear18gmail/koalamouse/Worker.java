@@ -42,10 +42,24 @@ public class Worker extends Thread {
 
             while(workerIn.available() != -1 && running) {
 
+<<<<<<< HEAD
                 byte[] packet = new byte[4];
                 workerIn.read(packet);
                 client.sendPacket(packet);
 
+=======
+                //Store piped data
+                boolean left = workerIn.readBoolean();
+//                boolean right = workerIn.readBoolean();
+//                double x = workerIn.readDouble();
+//                double y = workerIn.readDouble();
+
+                //Send data over network
+                client.writeBoolean(left);
+//                client.writeBoolean(right);
+//                client.writeDouble(x);
+//                client.writeDouble(y);
+>>>>>>> refs/remotes/origin/master
             }
         } catch (IOException e) {
         }
