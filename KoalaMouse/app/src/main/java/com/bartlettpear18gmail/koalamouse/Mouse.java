@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-import static com.bartlettpear18gmail.koalamouse.Network.getAddress;
 
 public class Mouse extends AppCompatActivity implements SensorEventListener{
 
@@ -34,7 +33,7 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
 
     //Sensor setup
     private SensorManager sensorManager;
-    private final double Z_LIMIT = 0.1;
+    private final double Z_LIMIT = 0.01;
     private float xAccel;
     private float yAccel;
 
@@ -51,12 +50,18 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
     //Motion analysis
     private final int SCALAR = 10;
     private final int DELTA_TIME = 10; //milliseconds
+    private final int X_LIMIT = 1;
+    private final int Y_LIMIT = 1;
 
     private int prevPosX = 0;
     private int prevPosY = 0;
 
     private int currentPosX;
     private int currentPosY;
+
+    private int xVel0 = 0;
+    private int yVel0 = 0;
+
 
 
 
@@ -114,20 +119,30 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
                 while(running) {
                     try {
 
-                        currentPosX = (int) (xAccel * DELTA_TIME * DELTA_TIME)/2;
-                        currentPosY = (int) (yAccel * DELTA_TIME * DELTA_TIME)/2;
+                        if(xAccel > X_LIMIT) {
+                            currentPosX = (int) (xAccel * DELTA_TIME * DELTA_TIME)/2 + (xVel0 * DELTA_TIME);
+                            xVel0 = (int) (xVel0 + xAccel * DELTA_TIME);
+                            mouseX = currentPosX - prevPosX;
+                            prevPosX = currentPosX;
+                        } else {
+                            mouseX = 0;
+                        }
 
-                        mouseX = currentPosX - prevPosX;
-                        mouseY = currentPosY - prevPosY;
+                        if(yAccel > Y_LIMIT) {
+                            currentPosY = (int) (yAccel * DELTA_TIME * DELTA_TIME)/2 + (yVel0 * DELTA_TIME);
+                            yVel0 = (int) (yVel0 + yAccel * DELTA_TIME);
+                            mouseY = currentPosY - prevPosY;
+                            prevPosY = currentPosY;
+                        } else {
+                            mouseY = 0;
+                        }
 
-                        Log.d(tag, mouseX + " " + mouseY);
+
                         byte[] packet = {mouseLeft.byteValue(), mouseRight.byteValue(), mouseX.byteValue(), mouseY.byteValue()};
                         dataOutputStream.write(packet);
 
-                        prevPosX = currentPosX;
-                        prevPosY = currentPosY;
-
                         Thread.sleep(DELTA_TIME);
+
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -162,8 +177,8 @@ public class Mouse extends AppCompatActivity implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
             if(event.values[2] < Z_LIMIT) {
-                xAccel =  event.values[0];
-                yAccel =  event.values[1];
+                xAccel =  event.values[0] * SCALAR;
+                yAccel =  event.values[1] * SCALAR;
 
             } else {
                 xAccel = 0;

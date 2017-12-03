@@ -7,33 +7,100 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".Mouse">
+    tools:context=".Mouse"
+    android:background="@color/colorPrimary" >
+
+    <Button
+        android:layout_width="190dp"
+        android:layout_height="250dp"
+        android:id="@+id/left"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:clickable="true"
+        android:background="@drawable/left_button"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:layout_width="190dp"
+        android:layout_height="250dp"
+        android:id="@+id/right"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:clickable="true"
+        android:background="@drawable/right_button"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/mouse_divider"/>
+
+    <!--
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/app_name"
+        android:textColor="#C5C3C6"
+        android:id="@+id/sensorX"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/left"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="sans-serif-condensed"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/left"
-        android:text="Left"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="42dp"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="67dp" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/app_name"
+        android:textColor="#C5C3C6"
+        android:id="@+id/sensorY"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/sensorX"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-condensed"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Right"
-        android:id="@+id/right"
-        android:layout_below="@+id/left"
-        android:layout_alignLeft="@+id/left"
-        android:layout_alignStart="@+id/left"
-        android:layout_marginTop="24dp" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/app_name"
+        android:textColor="#C5C3C6"
+        android:id="@+id/disX"
+        android:layout_gravity="left"
+        android:layout_below="@id/sensorY"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-condensed"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/app_name"
+        android:textColor="#C5C3C6"
+        android:id="@+id/disY"
+        android:layout_gravity="start"
+        android:layout_below="@id/disX"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-condensed"/>
+
+    -->
+
+
 </RelativeLayout>

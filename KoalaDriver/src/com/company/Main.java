@@ -38,6 +38,8 @@ public class Main extends Application {
     static Server server = null;
     static Mouse mouse = null;
 
+    public static final double SCALAR = .25;
+
 
     public static void main(String[] args) throws IOException, InterruptedException, AWTException {
 
@@ -65,10 +67,9 @@ public class Main extends Application {
                     int x = packet[2];
                     int y = packet[3];
 
-//                    if(packet[0] == 1) mouse.pressLeft(); else mouse.releaseLeft();
-//                    if(packet[1] == 1) mouse.pressRight(); else mouse.releasRight();
-
-                    mouse.move(x,y);
+                    if(((int) packet[0]) == 1) mouse.pressLeft(); else mouse.releaseLeft();
+//                    if(((int) packet[1]) == 1) mouse.pressRight(); else mouse.releasRight();
+                    mouse.move((int) (x * SCALAR),(int) (y * SCALAR));
 
                 }
             } catch (IOException |  AWTException e) {
